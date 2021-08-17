@@ -1,0 +1,93 @@
+import numpy as np
+import pandas as pd
+import os
+
+import gc
+
+
+pip install tensorflow-gpu
+
+Conda create -n tf-gpu
+Conda activate tf-gpu
+pip install tensorflow-gpu
+
+os.getcwd()
+
+os.chdir("C:\\Users\\gurme\\OneDrive\\Documents\\Documents\\Gagan\\DS\\DS\\Python\\Kaggle Comps\\KaggleTabularSeriesMar21")
+
+train=pd.read_csv("train.csv")
+
+test=pd.read_csv("test.csv")
+
+ss=pd.read_csv("sample_submission.csv")
+
+train.shape
+
+test.shape
+
+train.columns
+
+train.dtypes
+
+train.isnull().sum().sum()
+
+test.columns
+
+test.dtypes
+
+test.isnull().sum().sum()
+
+
+
+test["target"]=np.nan
+
+train["Data"]="Train"
+test["Data"]="Test"
+
+train.shape
+
+test.shape
+
+data=pd.concat([train,test])
+
+data.shape
+
+data.columns
+
+cat_cols=['cat0', 'cat1', 'cat2', 'cat3', 'cat4', 'cat5', 'cat6', 'cat7',
+       'cat8', 'cat9', 'cat10', 'cat11', 'cat12', 'cat13', 'cat14', 'cat15',
+       'cat16', 'cat17', 'cat18']
+
+gc.collect()
+
+for col in cat_cols:
+    new=pd.get_dummies(data[col])
+    data=pd.concat([data,new],1)
+    del data[col]
+
+data.shape
+
+data.head()
+
+data = data.loc[:,~data.columns.duplicated()]
+
+data.shape
+
+train_x=data[data["Data"]=="Train"]
+
+test_y=data[data["Data"]=="Test"]
+
+train_x.shape
+test_y.shape
+
+test_y.columns
+
+test_y.drop(["target"],1,inplace=True)
+
+train_x.drop(["Data"],1,inplace=True)
+
+target_x=train_x["target"]
+
+train_x.drop(["target"],1,inplace=True)
+
+test_y.drop(["Data"],1,inplace=True)
