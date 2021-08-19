@@ -1,0 +1,127 @@
+import numpy as np
+import pandas as pd
+import os
+
+import gc
+
+
+pip install tensorflow-gpu
+
+Conda create -n tf-gpu
+Conda activate tf-gpu
+pip install tensorflow-gpu
+
+os.getcwd()
+
+os.chdir("C:\\Users\\gurme\\OneDrive\\Documents\\Documents\\Gagan\\DS\\DS\\Python\\Kaggle Comps\\KaggleTabularSeriesMar21")
+
+train=pd.read_csv("train.csv")
+
+test=pd.read_csv("test.csv")
+
+ss=pd.read_csv("sample_submission.csv")
+
+train.shape
+
+test.shape
+
+train.columns
+
+train.dtypes
+
+train.isnull().sum().sum()
+
+test.columns
+
+test.dtypes
+
+test.isnull().sum().sum()
+
+
+
+test["target"]=np.nan
+
+train["Data"]="Train"
+test["Data"]="Test"
+
+train.shape
+
+test.shape
+
+data=pd.concat([train,test])
+
+data.shape
+
+data.columns
+
+cat_cols=['cat0', 'cat1', 'cat2', 'cat3', 'cat4', 'cat5', 'cat6', 'cat7',
+       'cat8', 'cat9', 'cat10', 'cat11', 'cat12', 'cat13', 'cat14', 'cat15',
+       'cat16', 'cat17', 'cat18']
+
+gc.collect()
+
+for col in cat_cols:
+    new=pd.get_dummies(data[col])
+    data=pd.concat([data,new],1)
+    del data[col]
+
+data.shape
+
+data.head()
+
+data = data.loc[:,~data.columns.duplicated()]
+
+data.shape
+
+train_x=data[data["Data"]=="Train"]
+
+test_y=data[data["Data"]=="Test"]
+
+train_x.shape
+test_y.shape
+
+test_y.columns
+
+test_y.drop(["target"],1,inplace=True)
+
+train_x.drop(["Data"],1,inplace=True)
+
+target_x=train_x["target"]
+
+train_x.drop(["target"],1,inplace=True)
+
+test_y.drop(["Data"],1,inplace=True)
+
+from xgboost import XGBClassifier
+
+from sklearn.model_selection import train_test_split
+
+x_train,x_val,y_train,y_val=train_test_split(train_x,target_x,test_size=0.3,random_state=12)
+
+lr_list = [0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1]
+
+for learning_rate in lr_list:
+    xg_clf = XGBClassifier(n_estimators=20, learning_rate=learning_rate, max_features=20, max_depth=10, random_state=0)
+    xg_clf.fit(x_train, y_train)
+
+    print("Learning rate: ", learning_rate)
+    print("Accuracy score (training): {0:.3f}".format(xg_clf.score(x_train, y_train)))
+    print("Accuracy score (validation): {0:.3f}".format(xg_clf.score(x_val, y_val)))
+
+xg_clf1= XGBClassifier(n_estimators=20, learning_rate=1, max_features=20, max_depth=10, random_state=0)
+xg_clf1.fit(x_train, y_train)
+
+predictions_xg=xg_clf1.predict(test_y)
+
+train_x.head()
+
+target_x.head()
+
+ss.head()
+
+predictions_df=pd.DataFrame({"id":test["id"],"target":predictions_xg})
+
+
+predictions_df.to_csv("SubmissionAttempt5.csv",index=False)
+
+predictions_xg.shape
