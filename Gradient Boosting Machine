@@ -130,23 +130,7 @@ predictions_gbm.shape
 
 predictions_df=pd.DataFrame({"id":test["id"],"target":predictions_gbm})
 
-
-train_x.head()
-
-target_x.head()
-
-predictions=xgbc.predict(test_y)
-
-test_y.shape
-
 predictions_gbm.shape
-
-predictions_df=pd.DataFrame({"id":test["id"],"target":predictions})
-
-
-predictions_df.to_csv("SubmissionAttempt5.csv",index=False)
-
-
 
 ss.head()
 
